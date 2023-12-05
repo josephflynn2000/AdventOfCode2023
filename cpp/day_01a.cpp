@@ -39,8 +39,7 @@ int main() {
     std::ifstream myFile ("../input/day_1_input.txt");
     if (myFile.is_open()) {
         std::cout << getTotalFromFile(myFile);
-        return 1;
     }
     myFile.close();
-    return -1;
+    return 0;
 }
