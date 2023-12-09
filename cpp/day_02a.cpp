@@ -4,52 +4,50 @@
 #include <iostream>
 #include <regex>
 #include <string>
-#include <unordered_map>
-#include <__ranges/split_view.h>
 
 using namespace std;
 
+bool isValidColorValue(const std::string& color, int value) {
+	if (color=="green") {return !(value > 13); }
+	if (color=="blue")	{return !(value > 14); }
+	if(color=="red")    {return !(value > 12); }
+	return true;
+}
+bool getStartIndex(std::string game_string) {
+	std::regex e_basic_regex ("\\s([0-9]+)\\s(red|blue|green)");   // matches words beginning by "sub"
+
+	std::regex_iterator<std::string::iterator> rit ( game_string.begin(), game_string.end(), e_basic_regex );
+	std::regex_iterator<std::string::iterator> rend;
+
+	while (rit!=rend) {
+		std::string a = rit->str();
+		std::string color = a.substr(a.find_last_of(' ')+1);
+		if (!isValidColorValue(color,stoi(a))) {
+			return false;
+		}
+		++rit;
+	}
+
+	return true;
+}
+
+int fileIterator(std::ifstream& inputFile) {
+	int total = 0; int game=1; std::string line;
+	while (getline(inputFile,line)) {
+		if (getStartIndex(line)) {
+			total += game;
+		}
+		game++;
+	}
+	return total;
+}
+
 int main() {
 	std::ifstream inputFile; inputFile.open("../input/day_2_input.txt");
-	if (!inputFile.is_open()) { return 0;}
-	int sum{};
-	int gameId = 1;
-	string l;
-	while (getline(inputFile,l))
-	{
-		auto c1 = l.find(':');
-		auto sets_line = l.substr(c1 + 2);
-		auto sets = std::ranges::views::split(regex("; "), sets_line);
-		unordered_map<string, int> cubes;
-		cubes["red"] = 0;
-		cubes["green"] = 0;
-		cubes["blue"] = 0;
-		bool possible = true;
-		for(auto subset_line : sets)
-		{
-			auto cubes_line = ranges::views::split(regex(", "), subset_line);
-			for(auto cube : cubes_line)
-			{
-				regex re("(\\d+)\\s(\\w+)");
-				smatch m;
-				regex_match(cube, m, re);
-				auto n = stoi(m[1].str());
-				auto c = m[2].str();
-				cubes[c] = n;
-			}
-			if(cubes["red"] > 12 || cubes["green"] > 13 || cubes["blue"] > 14)
-			{
-				possible = false;
-				break;
-			}
-		}
-		if(possible)
-		{
-			sum += gameId;
-		}
-		gameId++;
+	if (inputFile.is_open()) {
+		std::cout << fileIterator(inputFile) << std::endl;
 	}
 	inputFile.close();
-	return sum;
+	return 0;
 }
 

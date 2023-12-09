@@ -54,9 +54,7 @@ int fileIterator(std::ifstream& inputFile) {
     int total = 0;
     std::string line;
     while (getline(inputFile,line)) {
-        int a = (getFirstNumber(line) * 10)+getLastNumber(line);
-        std::cout << line << '\n' << a << std::endl;
-        total += a;
+        total += (getFirstNumber(line) * 10)+getLastNumber(line);
     }
     return total;
 }
@@ -64,7 +62,7 @@ int fileIterator(std::ifstream& inputFile) {
 int main() {
     std::ifstream myFile ("../input/day_1_input.txt");
     if (myFile.is_open()) {
-        std::cout << fileIterator(myFile);
+        std::cout << fileIterator(myFile) << std::endl;
     }
     myFile.close();
     return 0;
